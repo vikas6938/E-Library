@@ -9,7 +9,11 @@ exports.createBook = async (req, res) => {
   }
 
   try {
-    const book = new Book({ title, author, genre });
+   
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    console.log("Image uploaded at:", imageUrl);  // Log the file path
+
+    const book = new Book({ title, author, genre, imageUrl });
     await book.save();
     res.status(201).json(book);
   } catch (error) {
@@ -27,17 +31,44 @@ exports.getBooks = async (req, res) => {
   }
 };
 
-// Update a book
+//////// Update a book
 exports.updateBook = async (req, res) => {
   try {
-    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { title, author, genre } = req.body;
+    
+    // Handle image upload if there's a file
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Create an object for the fields that should be updated
+    const updatedData = {
+      title,
+      author,
+      genre,
+    };
+
+    // Add imageUrl to the update if a new image was uploaded
+    if (imageUrl) {
+      updatedData.imageUrl = imageUrl;
+    }
+
+    // Check if the book exists
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Update the book
+    const updatedBook = await Book.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+
+    // Return the updated book data
     res.status(200).json(updatedBook);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// Delete a book
+
+///////// Delete a book
 exports.deleteBook = async (req, res) => {
   try {
     await Book.findByIdAndDelete(req.params.id);

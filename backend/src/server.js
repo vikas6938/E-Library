@@ -4,9 +4,15 @@ const authRoutes = require('./routes/auth');  // Adjust path if necessary
 const bookRoutes = require('./routes/bookRoutes');  // Add book routes
 const dbConnection = require('./config/db');
 require('dotenv').config();
+const path = require('path');
 
 // Initialize app
 const app = express();
+
+// Upload Images
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 
 // Middleware to parse incoming JSON and URL-encoded payloads
 app.use(express.json());
