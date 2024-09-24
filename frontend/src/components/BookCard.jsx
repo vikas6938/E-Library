@@ -23,11 +23,14 @@ const BookCard = ({ book }) => {
 
   return (
     <div className="card mb-4 shadow-sm" style={{ maxWidth: '350px' }}>
-      <img
-        src={book.imageUrl || 'https://via.placeholder.com/150'} // Placeholder image if no image is provided
-        className="card-img-top"
-        alt={`${book.title} cover`}
-      />
+      <div style={{ height: '250px', overflow: 'hidden' }}>
+        <img
+          src={`http://localhost:5000${book.imageUrl}`} // Dynamic image URL
+          className="card-img-top img-fluid"
+          alt={`${book.title} cover`} // Alt text for accessibility
+          style={{ objectFit: 'cover', width: '100%', height: '100%' }} // Ensures the image covers the entire space
+        />
+      </div>
       <div className="card-body">
         <h5 className="card-title text-primary">{book.title}</h5>
         <p className="card-text"><strong>Author:</strong> {book.author}</p>

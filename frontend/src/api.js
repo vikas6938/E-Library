@@ -46,8 +46,13 @@ export const getBookDetails = (id) => {
   return api.get(`/books/${id}`);
 };
 
+// API functions
 export const addBook = (bookData) => {
-  return api.post('/books', bookData);
+  return api.post('/books', bookData, {
+    headers: {
+      'Content-Type': 'multipart/form-data', // Set content type for file upload
+    },
+  });
 };
 
 export const borrowBook = (id) => {

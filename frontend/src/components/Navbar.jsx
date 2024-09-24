@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSignInAlt,
-  faHome,
-  faBook,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons"; // Import icons
+import { faSignInAlt, faHome, faBook,faUser,} 
+from "@fortawesome/free-solid-svg-icons"; // Import icons
 
 const Navbar = () => {
   const [user, setUser] = useState(null); // State to hold user information
@@ -19,11 +15,13 @@ const Navbar = () => {
     }
   }, []);
 
+  
+
   const handleLogout = () => {
     localStorage.removeItem("token"); // Clear token on logout
     localStorage.removeItem("user"); // Clear user info
     setUser(null); // Reset the user state
-    // Optionally, you can navigate to the home or login page after logout
+   // Optionally, you can navigate to the home or login page after logout
   };
 
   return (
@@ -93,10 +91,11 @@ const Navbar = () => {
                 style={{ textDecoration: "none" }}
                 className="bg-white text-dark font-bold px-4 py-2 rounded ml-4 d-flex align-items-center"
               >
-                <FontAwesomeIcon icon={faSignInAlt} className="mr-2" /> Login
+                <FontAwesomeIcon icon={faSignInAlt} className="mr-2" /> LogOut
               </Link>
             </>
           )}
+
         </div>
       </div>
     </nav>

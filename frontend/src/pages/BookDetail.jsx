@@ -1,41 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { getBookDetails } from '../api'; // Import the API function to fetch book details
 
 const BookDetail = () => {
-  const { id } = useParams();
-  const [book, setBook] = useState(null);
+  const { id } = useParams(); // Get book ID from the URL
+  const [book, setBook] = useState(null); // State to store the book data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
-    axios.get(`/api/books/${id}`)
-      .then(response => setBook(response.data))
-      .catch(error => console.error('Error fetching book details:', error));
-  }, [id]);
+    // Fetch book details when the component mounts
+    getBookDetails(id)
+      .then((response) => {
+        setBook(response.data); // Set the book data
+        setLoading(false); // Set loading to false after fetching the data
+      })
+      .catch((error) => {
+        console.error('Error fetching book details:', error);
+        setError('Error fetching book details');
+        setLoading(false); // Set loading to false if there's an error
+      });
+  }, [id]); // Fetch data when the ID changes
 
-  const handleBorrow = () => {
-    axios.post(`/api/books/${id}/borrow`)
-      .then(() => alert('Book borrowed successfully'))
-      .catch(error => console.error('Error borrowing book:', error));
-  };
+  // Display loading message if still fetching
+  if (loading) {
+    return <div className="container mt-5">Loading...</div>;
+  }
 
-  const handleReturn = () => {
-    axios.post(`/api/books/${id}/return`)
-      .then(() => alert('Book returned successfully'))
-      .catch(error => console.error('Error returning book:', error));
-  };
+  // Display error message if there's an error
+  if (error) {
+    return <div className="container mt-5">{error}</div>;
+  }
 
-  if (!book) return <p>Loading...</p>;
-
+  // Display the book details
   return (
-    <div className="container mx-auto mt-8">
-      <h1 className="text-3xl font-bold">{book.title}</h1>
-      <p>Author: {book.author}</p>
-      <p>Genre: {book.genre}</p>
-      <p>Published: {book.publicationDate}</p>
-      {book.available ? (
-        <button onClick={handleBorrow} className="bg-blue-500 text-white px-4 py-2 rounded">Borrow</button>
-      ) : (
-        <button onClick={handleReturn} className="bg-red-500 text-white px-4 py-2 rounded">Return</button>
+    <div className="container mt-5">
+      {book && (
+        <div className="card shadow-sm">
+          <div className="row no-gutters">
+            <div className="col-md-4">
+              <img
+                src={`http://localhost:5000${book.imageUrl}`} // Display the book image
+                className="card-img"
+                alt={`${book.title} cover`}
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+              />
+            </div>
+            <div className="col-md-8">
+              <div className="card-body">
+                <h2 className="card-title text-primary">{book.title}</h2>
+                <p className="card-text">
+                  <strong>Author:</strong> {book.author}
+                </p>
+                <p className="card-text">
+                  <strong>Genre:</strong> {book.genre}
+                </p>
+                <p className="card-text">
+                  <strong>Published:</strong> {book.publicationDate}
+                </p>
+                <p className="card-text">
+                  <strong>Description:</strong> {book.description || 'No description available'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
